@@ -1,12 +1,19 @@
 import React from 'react';
 import List from './List';
+import { createStore, combineReducers } from 'redux'
+import { Provider, connect } from 'react-redux'
+import * as rdx from './rdx'
 
 
+const View = connect(
+  rdx.mapStateToProps,
+  rdx.mapDispatchToProps
+)(List)
 
   const WrappedApp = () => (
-    <div>
-      <List />
-    </div>
+    <Provider store={rdx.store}>
+      <View />
+    </Provider>
   );
 
 
