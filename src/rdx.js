@@ -1,20 +1,23 @@
 
 import { createStore } from 'redux'
+import { combineReducers } from 'redux'
+import undoable from 'redux-undo'
+import { ActionCreators } from 'redux-undo';
 
 
 
-export const createTodoAction = {
+const createTodoAction = {
   type: 'CREATE',
   value: 'text'
 }
 
-export const deleteTodoAction = {
+const deleteTodoAction = {
   type: 'DELETE',
   value: 'text2'
 }
 
 
-export function reducer(state = [{text: ''}], action) {
+const reducer = (state = [{text: ''}], action) => {
   if (action.type === 'CREATE') {
     return [...state, {text: action.value}]
   } else if (action.type === 'DELETE'){
@@ -24,11 +27,15 @@ export function reducer(state = [{text: ''}], action) {
   }
 }
 
+const newReducer = undoable(reducer)
+
+
 // Map Redux state to component props
 export function mapStateToProps(state) {
   return {
-    value: state,
-    valueLatest: state[state.length-1].text
+    value: state.present,
+    valuePast: state.past
+//    valueLatest: state[state.length-1].text
   }
 }
 
@@ -36,7 +43,10 @@ export function mapStateToProps(state) {
 export function mapDispatchToProps(dispatch) {
   return {
     onIncrementClick: () => dispatch(createTodoAction),
-    onDecrementClick: () => dispatch(deleteTodoAction)
+    onDecrementClick: () => dispatch(deleteTodoAction),
+    onUndo: () => dispatch(ActionCreators.undo()),
+    onRedo: () => dispatch(ActionCreators.redo())
+
   }
 }
 
@@ -45,4 +55,4 @@ export function mapDispatchToProps(dispatch) {
 
 // console.log (reducers)
 
-export const store = createStore(reducer)
+export const store = createStore(newReducer)
