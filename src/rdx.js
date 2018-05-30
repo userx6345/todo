@@ -5,23 +5,35 @@ import undoable from 'redux-undo'
 import { ActionCreators } from 'redux-undo';
 
 
-
-const createTodoAction = {
+const createTodoAction = input => ({
   type: 'CREATE',
-  value: 'text'
-}
+  value: input
+})
 
-const deleteTodoAction = {
+const deleteTodoAction = id => ({
   type: 'DELETE',
-  value: 'text2'
-}
+  value: id,
+  completed: false
+})
 
 
-const reducer = (state = [{text: ''}], action) => {
+const reducer = (state = [], action) => {
   if (action.type === 'CREATE') {
-    return [...state, {text: action.value}]
+    return [
+      ...state,
+      {
+        title: action.value
+      }
+    ]
   } else if (action.type === 'DELETE'){
-    return [...state, {text: action.value}]
+
+    console.log(action.value)
+
+    return state.map((todo,i) =>
+        (action.value === i)
+          ? {...todo, title: todo.title, completed: true}
+          : {...todo, title: todo.title}
+      )
   } else {
     return state
   }
@@ -35,15 +47,15 @@ export function mapStateToProps(state) {
   return {
     value: state.present,
     valuePast: state.past
-//    valueLatest: state[state.length-1].text
+//    valueLatest: state[state.length-1].title
   }
 }
 
 // Map Redux actions to component props
 export function mapDispatchToProps(dispatch) {
   return {
-    onIncrementClick: () => dispatch(createTodoAction),
-    onDecrementClick: () => dispatch(deleteTodoAction),
+    onIncrementClick: (input) => dispatch(createTodoAction(input)),
+    onDecrementClick: (id) => dispatch(deleteTodoAction(id)),
     onUndo: () => dispatch(ActionCreators.undo()),
     onRedo: () => dispatch(ActionCreators.redo())
 

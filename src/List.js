@@ -10,6 +10,7 @@ class List extends Component {
     super(props)
 
     this.showState = this.showState.bind(this)
+    this.keyPress = this.keyPress.bind(this)
   //  this.store = this.store.bind(this)
   }
 
@@ -18,16 +19,31 @@ class List extends Component {
   showState() {
 
       console.log(this.props.value)
-      console.log(this.props.valuePast)
+    //  console.log(this.props.valuePast)
 
   }
 
-  IncrementMethod() {
+  IncrementMethod(input) {
 
+// Use dispatch via props instead
+
+/*
     return store.dispatch({
       type: 'CREATE',
-      value: 'text8'
+      value: input.target.value
     })
+*/
+
+  }
+
+  keyPress(e) {
+
+    if(e.keyCode == 13){
+       console.log('value', e.target.value)
+       // put the login here
+       this.props.onIncrementClick(e.target.value)
+       e.target.value = ""
+    }
   }
 
 
@@ -45,7 +61,8 @@ class List extends Component {
         // key prop added so react doesn't throw warning
         key = {i}
         id = {i}
-        todos = {todo.text}
+        todos = {todo.title}
+        completed = {todo.completed}
         onIncrementClick = {onIncrementClick}
         onDecrementClick = {onDecrementClick}
         IncrementMethod = {this.IncrementMethod}
@@ -56,11 +73,17 @@ class List extends Component {
     return (
       <div className="App">
           <h2 className="App-title">Todos</h2>
-          <div onClick = {this.IncrementMethod}> <p className="button"> + </p></div>
-          <div onClick = {onDecrementClick}> <p className="button"> - </p></div>
                 <div onClick = {this.showState}> <p className="button"> Show State </p></div>
                 <div onClick = {onUndo}> <p className="button"> Undo </p></div>
                 <div onClick = {onRedo}> <p className="button"> Redo </p></div>
+                <input
+                  type="text"
+                  name="title"
+                  // value={'test'}
+                  // onChange={e => onIncrementClick(e.target.value)}
+                  // use on key down to get value only on enter
+                  onKeyDown={this.keyPress}
+                />
           {todosComponents}
       </div>
     );
