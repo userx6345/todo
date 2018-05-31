@@ -10,10 +10,23 @@ const createTodoAction = input => ({
   value: input
 })
 
+const completeTodoAction = id => ({
+  type: 'COMPLETE',
+  value: id,
+  completed: false
+})
+
 const deleteTodoAction = id => ({
   type: 'DELETE',
   value: id,
-  completed: false
+  deleted: false
+})
+
+const editTodoAction = (id, input) => ({
+  type: 'EDIT',
+  value: id,
+  text: input,
+  edit: false
 })
 
 
@@ -25,17 +38,28 @@ const reducer = (state = [], action) => {
         title: action.value
       }
     ]
-  } else if (action.type === 'DELETE'){
-
-    console.log(action.value)
-
+  } else if (action.type === 'COMPLETE'){
     return state.map((todo,i) =>
         (action.value === i)
-          ? {...todo, title: todo.title, completed: true}
+          ? {...todo, title: todo.title, completed: !todo.completed}
           : {...todo, title: todo.title}
       )
+  } else if (action.type === 'DELETE'){
+    return state.filter((todo, i) => i !== action.value)
+  } else if (action.type === 'EDIT' && action.text !== undefined){
+  return state.map((todo,i) =>
+      (action.value === i)
+        ? {...todo, title: action.text, edit: !todo.edit}
+        : {...todo, title: todo.title}
+    )
+  } else if (action.type === 'EDIT' && action.text === undefined){
+  return state.map((todo,i) =>
+      (action.value === i)
+        ? {...todo, title: todo.title, edit: !todo.edit}
+        : {...todo, title: todo.title}
+    )
   } else {
-    return state
+      return state
   }
 }
 
@@ -54,8 +78,10 @@ export function mapStateToProps(state) {
 // Map Redux actions to component props
 export function mapDispatchToProps(dispatch) {
   return {
-    onIncrementClick: (input) => dispatch(createTodoAction(input)),
-    onDecrementClick: (id) => dispatch(deleteTodoAction(id)),
+    onCreateClick: (input) => dispatch(createTodoAction(input)),
+    onCompleteClick: (id) => dispatch(completeTodoAction(id)),
+    onDeleteClick: (id) => dispatch(deleteTodoAction(id)),
+    onEditClick: (id, input) => dispatch(editTodoAction(id, input)),
     onUndo: () => dispatch(ActionCreators.undo()),
     onRedo: () => dispatch(ActionCreators.redo())
 
