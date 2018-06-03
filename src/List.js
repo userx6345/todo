@@ -41,7 +41,7 @@ class List extends Component {
 
 //    console.log(this.props.value[this.props.value.length-1])
 
-    const {onCreateClick, onCompleteClick, onUndo, onRedo, onDeleteClick, onEditClick} = this.props
+    const {onCreateClick, onCompleteClick, onUndo, onRedo, onDeleteClick, onEditClick, onCancelEditClick} = this.props
 
     const todosComponents = this.props.value.map((todo, i) => (
 
@@ -56,6 +56,7 @@ class List extends Component {
         onCompleteClick = {onCompleteClick}
         onDeleteClick = {onDeleteClick}
         onEditClick = {onEditClick}
+        onCancelEditClick = {onCancelEditClick}
       />
 
     ))

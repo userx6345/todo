@@ -29,6 +29,13 @@ const editTodoAction = (id, input) => ({
   edit: false
 })
 
+const cancelEditTodoAction = (id, input) => ({
+  type: 'CANCEL_EDIT',
+  value: id,
+  text: input,
+  edit: false
+})
+
 
 const reducer = (state = [], action) => {
   if (action.type === 'CREATE') {
@@ -45,14 +52,15 @@ const reducer = (state = [], action) => {
           : {...todo, title: todo.title}
       )
   } else if (action.type === 'DELETE'){
-    return state.filter((todo, i) => i !== action.value)
-  } else if (action.type === 'EDIT' && action.text !== undefined){
+    return state.filter((todo, i) => i !== action.value
+    )
+  } else if (action.type === 'EDIT'){
   return state.map((todo,i) =>
       (action.value === i)
         ? {...todo, title: action.text, edit: !todo.edit}
         : {...todo, title: todo.title}
     )
-  } else if (action.type === 'EDIT' && action.text === undefined){
+  } else if (action.type === 'CANCEL_EDIT'){
   return state.map((todo,i) =>
       (action.value === i)
         ? {...todo, title: todo.title, edit: !todo.edit}
@@ -82,6 +90,7 @@ export function mapDispatchToProps(dispatch) {
     onCompleteClick: (id) => dispatch(completeTodoAction(id)),
     onDeleteClick: (id) => dispatch(deleteTodoAction(id)),
     onEditClick: (id, input) => dispatch(editTodoAction(id, input)),
+    onCancelEditClick: (id, input) => dispatch(cancelEditTodoAction(id, input)),
     onUndo: () => dispatch(ActionCreators.undo()),
     onRedo: () => dispatch(ActionCreators.redo())
 

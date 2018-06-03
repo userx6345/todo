@@ -22,7 +22,7 @@ class Todos extends Component {
   }
 
   editor () {
-    this.props.onEditClick(this.props.id)
+    this.props.onCancelEditClick(this.props.id)
   }
 
   delete () {
@@ -31,8 +31,13 @@ class Todos extends Component {
 
   keyPress(e) {
 
-    if(e.keyCode === 13){
+    if(e.keyCode === 13 && e.target.value !== undefined){
+      console.log(e.target.value)
        this.props.onEditClick(this.props.id, e.target.value)
+       this.edit = !this.edit
+    } else if(e.keyCode === 13 && e.target.value === undefined){
+      console.log(e.target.value)
+       this.props.onCancelEditClick(this.props.id, e.target.value)
        this.edit = !this.edit
     }
   }
@@ -42,7 +47,7 @@ class Todos extends Component {
 
     //deconstuct props
 
-    const {todos, id, completed, edit, onCreateClick, onCompleteClick, onDeleteClick, onEditClick} = this.props
+    const {todos, id, completed, edit, onCreateClick, onCompleteClick, onDeleteClick, onEditClick, onCancelEditClick} = this.props
 
     return (
       <div>
