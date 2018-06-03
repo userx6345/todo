@@ -31,13 +31,14 @@ class Todos extends Component {
 
   keyPress(e) {
 
-    if(e.keyCode === 13 && e.target.value !== undefined){
-      console.log(e.target.value)
+    if(e.keyCode === 13 && e.target.value !== ''){
        this.props.onEditClick(this.props.id, e.target.value)
        this.edit = !this.edit
-    } else if(e.keyCode === 13 && e.target.value === undefined){
-      console.log(e.target.value)
-       this.props.onCancelEditClick(this.props.id, e.target.value)
+    } else if(e.keyCode === 13 && e.target.value === ''){
+       this.props.onCancelEditClick(this.props.id, this.props.todos)
+       this.edit = !this.edit
+    } else if(e.keyCode === 27 && e.target.value === ''){
+       this.props.onCancelEditClick(this.props.id, this.props.todos)
        this.edit = !this.edit
     }
   }
@@ -47,10 +48,14 @@ class Todos extends Component {
 
     //deconstuct props
 
-    const {todos, id, completed, edit, onCreateClick, onCompleteClick, onDeleteClick, onEditClick, onCancelEditClick} = this.props
+    const {todos, id, completed, edit} = this.props
 
     return (
       <div>
+      {edit
+        ?
+        <div><br></br></div>
+        :
       <div onClick = {this.complete} className="App"
       style={{
       textDecoration: completed ? 'line-through' : 'none'
@@ -60,15 +65,23 @@ class Todos extends Component {
         {todos}
         </p></h4>
       </div>
-      {edit ?
-        <input style={{
+    }
+      {edit
+        ?
+        <div><input style={{
         'font-family': 'Consolas,Menlo,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New,monospace,sans-serif',
         'font-size': '32px',
         'background-color': '#333',
         'color': '#00ff00'
-      }} type="text" name="title" onKeyDown={this.keyPress}/> :
-        <div ><div onClick = {this.editor}> [Edit] </div>
-        <div onClick = {this.delete}> [Delete] </div></div>}
+        }} type="text"
+        name="title"
+        placeholder={todos}
+        onKeyDown={this.keyPress}/>
+        <div onClick = {this.editor}> <br></br>[Cancel] </div></div>
+        :
+        <div><div onClick = {this.editor}> [Edit] </div>
+        <div onClick = {this.delete}> [Delete] </div></div>
+      }
       </div>
     );
   }
